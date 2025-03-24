@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvantový superhledač</title>
+    <style>
+        .wrong{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <main id="main">
+        <h1>Kvantový superhledač</h1>
+        <h2>Zadej indicii</h2>
+        <p>Indicie zadávej bez háčků a čárek. Na velikosti písmen nezáleží.</p>
+        <input type="text" id="input" placeholder="Zadej indicii">
+        <button id="submit">Odeslat</button>
+        <h2>Zadané indicie [<span id="clueCount"></span>/<span id="allClues"></span>]</h2>
+        <div id="errorMessage"></div>
+        <div id="clueList"></div>
+        <button id="analyze" disabled="true">Analyzovat</button>
+    </main>
+</body>
+<script src="app.js"></script>
+</html>
