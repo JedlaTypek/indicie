@@ -5,7 +5,7 @@ let status = 1; // 1 = entering clues, 2 = loading, 3 = end
 let timeLeft = 1800000; // 30 minut
 
 const clues = [
-    "orchidej muze za chyby v systemu",
+    "orchidej muze za chyby v systemu",/*
     "jestli me odvedou jdete po mych stopach",
     "je tady vic jdete vic do hloubi",
     "budu mit novy domov",
@@ -14,13 +14,13 @@ const clues = [
     "jsou tu vsude",
     "svet vs orchidej",
     "musim koncit",
-    "vim kde jsou"
+    "vim kde jsou"*/
 ];
 
 let storedClues, times;
 
 window.onload = () => {
-    update();
+    update(localStorage.getItem("percentage"));
 }
 
 submit.addEventListener('click', addClue);
@@ -132,7 +132,7 @@ function checkLoadingState() {
 
     if (savedStatus == 2 && savedTime) {
         let elapsed = Date.now() - parseInt(savedTime);
-        let newPercentage = Math.min(100, Math.floor(elapsed / 180)); // 18s -> 100%
+        let newPercentage = Math.min(100, Math.floor(elapsed / (timeLeft / 100))); // Půl hodiny -> 100%
 
         if (newPercentage >= 100) {
             status = 3;
@@ -160,7 +160,7 @@ function resumeLoading(startPercentage) {
             localStorage.setItem("status", status);
             update();
         }
-    }, 180);
+    }, timeLeft / 100); // Každou sekundu přidá 1 % (30 minut / 100)
 }
 
 function analyzeClues() {
