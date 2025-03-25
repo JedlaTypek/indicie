@@ -5,7 +5,7 @@ let status = 1; // 1 = entering clues, 2 = loading, 3 = end
 let timeLeft = 1800000; // 30 minut
 
 const clues = [
-    "orchidej muze za chyby v systemu",/*
+    "orchidej muze za chyby v systemu",
     "jestli me odvedou jdete po mych stopach",
     "je tady vic jdete vic do hloubi",
     "budu mit novy domov",
@@ -14,7 +14,7 @@ const clues = [
     "jsou tu vsude",
     "svet vs orchidej",
     "musim koncit",
-    "vim kde jsou"*/
+    "vim kde jsou"
 ];
 
 let storedClues, times;
