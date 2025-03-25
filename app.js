@@ -23,27 +23,39 @@ submit.addEventListener('click', addClue);
 
 function addClue() {
     let input = document.getElementById('input');
+    errorMessage.innerText = ''
     if (input.value) {
         // případně přidat validaci indicie
-        storedClues.push(input.value);
-        localStorage.setItem("clues", JSON.stringify(storedClues));
-        // přidání času
-        let now = new Date();
-        let hours = now.getHours();   // Hodiny (0-23)
-        let minutes = now.getMinutes(); // Minuty (0-59)
-        times.push(`${hours}:${String(minutes).padStart(2, "0")}`);
-        localStorage.setItem("times", JSON.stringify(times));
-        update();
+        if(storedClues.includes(input.value)){
+            errorMessage.innerText = 'Tuto indicii už jsi zadal. Zadej jinou.'
+        } else{
+            storedClues.push(input.value);
+            localStorage.setItem("clues", JSON.stringify(storedClues));
+            // přidání času
+            let now = new Date();
+            let hours = now.getHours();   // Hodiny (0-23)
+            let minutes = now.getMinutes(); // Minuty (0-59)
+            times.push(`${hours}:${String(minutes).padStart(2, "0")}`);
+            localStorage.setItem("times", JSON.stringify(times));
+            update();
+        }
     }
 }
 
 function reset(){
     localStorage.clear();
-    update();
+    window.location.reload()
     return 'Data byla smazána';
 }
 
 function update(percentage = ""){
+    let statusLocal = localStorage.getItem("status");
+    if(statusLocal){
+        status = parseInt(statusLocal);
+    } else {
+        localStorage.setItem("status", 1);
+        status = 1;
+    }
     if(status === 1){
         input.focus();
         input.value = '';
@@ -62,7 +74,7 @@ function update(percentage = ""){
         document.getElementById('clueList').innerHTML = '';
         if(storedClues.length > 0){
             storedClues.forEach((clue, index) => {
-                document.getElementById('clueList').innerHTML += `<div class="${wrongIndexes.includes(index) ? "wrong" : ""}"><button onClick="remove(${index})">Smazat</button>${times[index]} - ${clue}</div>`;
+                document.getElementById('clueList').innerHTML += `<div class="${wrongIndexes.includes(index) ? "wrong" : ""}"><p>${times[index]}</p><p class="clueText">${clue}</p><button onClick="remove(${index})">Smazat</button></div>`;
             });
         }
         if(storedClues.length === clues.length){
@@ -80,9 +92,9 @@ function update(percentage = ""){
     } else if(status === 3){
         main.innerHTML = `
             <h1>Povedlo se!</h1>
-            <p>Na místo jsem poslal Seektrona, což je geneticky upravený brouk, který každou půl minutu vydává tři zvukové signály.<br>
+            <p class="align-center">Na místo jsem poslal Seektrona, což je geneticky upravený brouk, který každou půl minutu vydává tři zvukové signály.
             Až budete připraveni, můžete kliknout na tlačítko níže pro spuštění zvukových signálů. Hodně štěstí při hledání!</p>
-            <button onClick="main.innerHTML += '<p>Seektron spuštěn</p>'">Spustit Seektrona</button>`
+            <button onClick="main.innerHTML += '<p class=align-center>Seektron spuštěn</p>'">Spustit Seektrona</button>`
     }
     
 }
@@ -108,32 +120,65 @@ function remove(index){
     update();
 }
 
-analyze.addEventListener('click', () => {
+// Zkontroluj stav načítání po reloadu
+function checkLoadingState() {
+    let savedStatus = localStorage.getItem("status");
+    let savedTime = localStorage.getItem("loadingStart");
+    let savedPercentage = localStorage.getItem("percentage");
+
+    if (savedStatus == 2 && savedTime) {
+        let elapsed = Date.now() - parseInt(savedTime);
+        let newPercentage = Math.min(100, Math.floor(elapsed / 180)); // 18s -> 100%
+
+        if (newPercentage >= 100) {
+            status = 3;
+            localStorage.setItem("status", status);
+            update();
+        } else {
+            status = 2;
+            localStorage.setItem("status", status);
+            update(newPercentage);
+            resumeLoading(newPercentage);
+        }
+    }
+}
+
+// Obnovení načítání po reloadu
+function resumeLoading(startPercentage) {
+    let count = startPercentage;
+    let interval = setInterval(() => {
+        count++;
+        localStorage.setItem("percentage", count);
+        update(count);
+        if (count >= 100) {
+            clearInterval(interval);
+            status = 3;
+            localStorage.setItem("status", status);
+            update();
+        }
+    }, 180);
+}
+
+function analyzeClues() {
     wrongIndexes = [];
     storedClues.forEach((clue, index) => {
-        if(clue !== clues[index]){
+        if (!clues.includes(clue)) {
             wrongIndexes.push(index);
         }
     });
-    if(wrongIndexes.length === 0){
+
+    if (wrongIndexes.length === 0) {
         console.log('Všechny indicie jsou správně');
         status = 2;
-        let count = 0;
-        update(count);
-        let interval = setInterval(() => {
-            console.log(count);
-            update(count);
-            count++;
-            if (count > 100) {
-                clearInterval(interval); // Po 100 iteracích zastaví volání
-                status = 3;
-                update();
-            }
-        }, 18000 / 1000);
+        localStorage.setItem("status", status);
+        localStorage.setItem("loadingStart", Date.now()); // Uložit start loadingu
+        update(0);
+        resumeLoading(0);
     } else {
-        errorMessage.innerText = `Počítači se nepodařilo ze zadaných indicií nic vypátrat. Indicie vyznačené červeně jsou špatně.`;
-        console.log(wrongIndexes);
+        errorMessage.innerText = `Některé indicie jsou špatně!`;
         update();
     }
+}
 
-});
+analyze.addEventListener('click', analyzeClues);
+checkLoadingState();

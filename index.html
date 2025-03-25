@@ -5,8 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kvantový superhledač</title>
     <style>
-        .wrong{
-            color: red;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #1e1e2e;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        main {
+            padding: 50px;
+            border-radius: 50px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #f8f8f2;
+            margin-bottom: 10px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input {
+            border: 2px solid #50fa7b;
+            background: #44475a;
+            color: white;
+        }
+
+        button {
+            background: #6272a4;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #50fa7b;
+            color: #282a36;
+        }
+
+        button:disabled {
+            background: #44475a;
+            cursor: not-allowed;
+        }
+
+        .wrong {
+            color: #ff5555;
+            font-weight: bold;
+        }
+
+        #clueList div {
+            display: flex;
+            background: #44475a;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px 0;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #clueList button {
+            background: #ff5555;
+            border: none;
+            padding: 5px;
+            font-size: 14px;
+            width: fit-content;
+            cursor: pointer;
+        }
+
+        #clueList button:hover {
+            background: #ff2222;
+        }
+
+        #errorMessage {
+            color: #ff5555;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .align-center{
+            text-align: center;
+        }
+        .clueText{
+            flex-grow: 1;
         }
     </style>
 </head>
@@ -14,7 +114,7 @@
     <main id="main">
         <h1>Kvantový superhledač</h1>
         <h2>Zadej indicii</h2>
-        <p>Indicie zadávej bez háčků a čárek. Na velikosti písmen nezáleží.</p>
+        <p class="align-center">Indicie zadávej bez háčků a čárek. Na velikosti písmen nezáleží. U zadaných indicií vidíte kolik indicií z počtu potřebných už jste zadali. Níže pak můžete vidět zadané indicie a jejich čas zadání. Můžete je případně smazat a zadat znovu.</p>
         <input type="text" id="input" placeholder="Zadej indicii">
         <button id="submit">Odeslat</button>
         <h2>Zadané indicie [<span id="clueCount"></span>/<span id="allClues"></span>]</h2>
