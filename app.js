@@ -5,13 +5,17 @@ let status = 1; // 1 = entering clues, 2 = loading, 3 = end
 let timeLeft = 1800000; // 30 minut
 
 const clues = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6"
-]
+    "orchidej muze za chyby v systemu",
+    "jestli me odvedou jdete po mych stopach",
+    "je tady vic jdete vic do hloubi",
+    "budu mit novy domov",
+    "jdu do bunkru snad me nenajdou",
+    "vim o nich vse",
+    "jsou tu vsude",
+    "svet vs orchidej",
+    "musim koncit",
+    "vim kde jsou"
+];
 
 let storedClues, times;
 
@@ -29,7 +33,7 @@ function addClue() {
         if(storedClues.includes(input.value)){
             errorMessage.innerText = 'Tuto indicii už jsi zadal. Zadej jinou.'
         } else{
-            storedClues.push(input.value);
+            storedClues.push(input.value.toLowerCase());
             localStorage.setItem("clues", JSON.stringify(storedClues));
             // přidání času
             let now = new Date();
